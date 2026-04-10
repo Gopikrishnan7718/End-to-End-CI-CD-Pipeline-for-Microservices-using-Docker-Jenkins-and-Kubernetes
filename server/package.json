@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "body-parser": "*",
+    "cors": "2.8.4",
+    "express": "4.16.3",
+    "jest": "^30.3.0",
+    "nodemon": "1.18.3",
+    "pg": "8.0.3",
+    "redis": "2.8.0",
+    "supertest": "^7.2.2"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon",
+    "start": "NODE_ENV=production node index.js",
+    "test": "jest"
+  }
+}
