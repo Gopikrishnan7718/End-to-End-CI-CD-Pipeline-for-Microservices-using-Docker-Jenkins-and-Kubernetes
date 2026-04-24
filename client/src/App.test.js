@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import axios from 'axios';
 
-test('renders learn react link', () => {
+jest.mock('axios');
+
+test('renders home link', async () => {
+  axios.get.mockResolvedValue({ data: {} });
+
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
+
+  const linkElement = screen.getByText(/Home/i);
   expect(linkElement).toBeInTheDocument();
 });
