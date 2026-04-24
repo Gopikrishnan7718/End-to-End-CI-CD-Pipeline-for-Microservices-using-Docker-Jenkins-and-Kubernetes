@@ -1,15 +1,11 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
-import axios from 'axios';
 
-jest.mock('axios');
+// 🔥 MOCK Fib component completely
+jest.mock('./Fib', () => () => <div>Fib Mock</div>);
 
-test('renders home link', async () => {
-  axios.get.mockResolvedValue({ data: [] });
-
+test('renders home link', () => {
   render(<App />);
-
-  await waitFor(() => {
-    expect(screen.getByText(/Home/i)).toBeInTheDocument();
-  });
+  const linkElement = screen.getByText(/Home/i);
+  expect(linkElement).toBeInTheDocument();
 });
