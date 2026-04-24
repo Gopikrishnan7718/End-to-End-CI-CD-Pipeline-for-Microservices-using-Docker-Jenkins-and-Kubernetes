@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDS = 'docker-hub-creds'
         SONARQUBE_SERVER = 'sonarqube-server'
+        CI = 'true'
     }
 
     stages {
