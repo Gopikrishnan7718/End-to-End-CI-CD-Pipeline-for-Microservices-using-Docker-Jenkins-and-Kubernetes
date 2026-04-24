@@ -13,14 +13,14 @@ pipeline {
 
     stages {
 
-        // 🔹 1. Checkout (Webhook triggers this)
+        //  1. Checkout (Webhook triggers this)
         stage('Checkout') {
             steps {
-                git 'https://github.com/Gopikrishnan7718/End-to-End-CI-CD-Pipeline-for-Microservices-using-Docker-Jenkins-and-Kubernetes.git'
+                checkout scm
             }
         }
 
-        // 🔹 2. Install Dependencies
+        //  2. Install Dependencies
         stage('Install Dependencies') {
             steps {
                 sh '''
@@ -31,7 +31,7 @@ pipeline {
             }
         }
 
-        // 🔹 3. Unit Tests (ALL services)
+        //  3. Unit Tests (ALL services)
         stage('Unit Test') {
             steps {
                 sh '''
@@ -42,7 +42,7 @@ pipeline {
             }
         }
 
-        // 🔹 4. SonarQube Scan
+        //  4. SonarQube Scan
         stage('SonarQube') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
@@ -51,14 +51,14 @@ pipeline {
             }
         }
 
-        // 🔹 5. Build Client (React)
+        //  5. Build Client (React)
         stage('Build Client') {
             steps {
                 sh 'cd client && npm run build'
             }
         }
 
-        // 🔹 6. Docker Build with Tagging
+        //  6. Docker Build with Tagging
         stage('Docker Build') {
             steps {
                 script {
@@ -79,7 +79,7 @@ pipeline {
             }
         }
 
-        // 🔹 7. Integration Test
+        //  7. Integration Test
         stage('Integration Test') {
             steps {
                 sh '''
@@ -93,7 +93,7 @@ pipeline {
             }
         }
 
-        // 🔹 8. Push to Docker Hub
+        //  8. Push to Docker Hub
         stage('Push Images') {
             steps {
                 withCredentials([usernamePassword(
