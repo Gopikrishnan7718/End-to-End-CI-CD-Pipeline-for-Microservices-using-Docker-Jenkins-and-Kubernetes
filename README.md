@@ -12,26 +12,27 @@ Kubernetes handles container orchestration and deployment.
 
 ## Application Architecture
 
+```
 User
-↓
+ ↓
 Nginx (Reverse Proxy)
-↓
-┌─────────────────────────────┐
-│  React Client (Frontend)    │
-└─────────────────────────────┘
-↓
-┌─────────────────────────────┐
-│  Express API Server         │
-└─────────────────────────────┘
-↓                    ↓
-Redis (Pub/Sub)    Postgres (Storage)
-↓
-┌─────────────────────────────┐
-│  Worker Service             │
-│  (Fibonacci Calculator)     │
-└─────────────────────────────┘
-
----
+ ↓
+┌─────────────────────┐
+│  React Client       │
+└─────────────────────┘
+ ↓
+┌─────────────────────┐
+│  Express API Server │
+└─────────────────────┘
+ ↓                ↓
+Redis          Postgres
+(Pub/Sub)      (Storage)
+ ↓
+┌─────────────────────┐
+│  Worker Service     │
+│  (Fib Calculator)   │
+└─────────────────────┘
+```
 
 ---
 
@@ -110,6 +111,7 @@ Redis (Pub/Sub)    Postgres (Storage)
 
 ## Repository Structure
 
+```
 ├── client/            # React frontend
 │   ├── src/           # React components
 │   ├── Dockerfile
@@ -124,13 +126,14 @@ Redis (Pub/Sub)    Postgres (Storage)
 │   ├── fib.js         # Fibonacci logic
 │   ├── Dockerfile
 │   └── Dockerfile.dev
-├── nginx/             # Reverse proxy config
+├── nginx/             # Reverse proxy
 │   ├── default.conf
 │   ├── Dockerfile
 │   └── Dockerfile.dev
 ├── k8s/               # Kubernetes manifests
 ├── docker-compose.yml # Local development setup
 └── Jenkinsfile        # CI/CD pipeline
+```
 
 ---
 
