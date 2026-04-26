@@ -106,15 +106,15 @@ pipeline {
                     sh '''
                     echo $PASSWORD | docker login -u $USERNAME --password-stdin
 
-                    docker push gopi/client:$COMMIT
-                    docker push gopi/server:$COMMIT
-                    docker push gopi/worker:$COMMIT
-                    docker push gopi/nginx:$COMMIT
+                    docker push gopidoc77/fib-client:$COMMIT
+                    docker push gopidoc77/fib-server:$COMMIT
+                    docker push gopidoc77/fib-worker:$COMMIT
+                    docker push gopidoc77/fib-nginx:$COMMIT
 
-                    docker push gopi/client:latest
-                    docker push gopi/server:latest
-                    docker push gopi/worker:latest
-                    docker push gopi/nginx:latest
+                    docker push gopidoc77/fib-client:latest
+                    docker push gopidoc77/fib-server:latest
+                    docker push gopidoc77/fib-worker:latest
+                    docker push gopidoc77/fib-nginx:latest
                     '''
                 }
             }
