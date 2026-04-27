@@ -14,12 +14,14 @@ pipeline {
 
     stages {
 
+        //  1. Checkout (Webhook triggers this)
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
+        //  2. Install Dependencies
         stage('Install Dependencies') {
             steps {
                 sh '''
@@ -30,6 +32,7 @@ pipeline {
             }
         }
 
+        //  3. Unit Tests (ALL services)
         stage('Unit Test') {
             steps {
                 sh '''
@@ -40,23 +43,23 @@ pipeline {
             }
         }
 
+        //  4. SonarQube Scan
         stage('SonarQube') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh '''
-                    cd client
-                    npx sonar-scanner
-                    '''
+                    sh 'cd client && npx sonar-scanner'
                 }
             }
         }
 
+        //  5. Build Client (React)
         stage('Build Client') {
             steps {
                 sh 'cd client && npm run build'
             }
         }
 
+        //  6. Docker Build with Tagging
         stage('Docker Build') {
             steps {
                 script {
@@ -64,34 +67,34 @@ pipeline {
                 }
 
                 sh '''
-                docker build -t gopidoc77/fib-client:$COMMIT ./client
-                docker build -t gopidoc77/fib-server:$COMMIT ./server
-                docker build -t gopidoc77/fib-worker:$COMMIT ./worker
-                docker build -t gopidoc77/fib-nginx:$COMMIT ./nginx
+                docker build -t gopi/client:$COMMIT ./client
+                docker build -t gopi/server:$COMMIT ./server
+                docker build -t gopi/worker:$COMMIT ./worker
+                docker build -t gopi/nginx:$COMMIT ./nginx
 
-                docker tag gopidoc77/fib-client:$COMMIT gopidoc77/fib-client:latest
-                docker tag gopidoc77/fib-server:$COMMIT gopidoc77/fib-server:latest
-                docker tag gopidoc77/fib-worker:$COMMIT gopidoc77/fib-worker:latest
-                docker tag gopidoc77/fib-nginx:$COMMIT gopidoc77/fib-nginx:latest
+                docker tag gopi/client:$COMMIT gopi/client:latest
+                docker tag gopi/server:$COMMIT gopi/server:latest
+                docker tag gopi/worker:$COMMIT gopi/worker:latest
+                docker tag gopi/nginx:$COMMIT gopi/nginx:latest
                 '''
             }
         }
 
+        //  7. Integration Test
         stage('Integration Test') {
             steps {
                 sh '''
                 docker-compose -f docker-compose.ci.yml up -d
+                sleep 10
 
-                for i in {1..10}; do
-                  curl -f http://localhost:3050 && break
-                  sleep 3
-                done
+                curl -f http://localhost:3050 || exit 1
 
                 docker-compose -f docker-compose.ci.yml down
                 '''
             }
         }
 
+        //  8. Push to Docker Hub
         stage('Push Images') {
             steps {
                 withCredentials([usernamePassword(
