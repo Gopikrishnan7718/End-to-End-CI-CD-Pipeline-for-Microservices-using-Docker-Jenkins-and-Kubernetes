@@ -42,15 +42,20 @@ pipeline {
 
         stage('SonarQube') {
             steps {
-                script {
-                    def scannerHome = tool 'sonar-scanner'
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh '''
+                    apt-get update
+                    apt-get install -y unzip wget
 
-                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                        sh """
-                        cd client
-                        ${scannerHome}/bin/sonar-scanner
-                        """
-                    }
+                    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.1.0.4889-linux-x64.zip
+
+                    unzip sonar-scanner-cli-7.1.0.4889-linux-x64.zip
+
+                    export PATH=$PATH:$(pwd)/sonar-scanner-7.1.0.4889-linux-x64/bin
+
+                    cd client
+                    sonar-scanner
+                    '''
                 }
             }
         }
