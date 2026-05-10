@@ -47,9 +47,11 @@ pipeline {
                     apt-get update
                     apt-get install -y unzip wget
 
-                    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.1.0.4889-linux-x64.zip
+                    if [ ! -d "sonar-scanner-7.1.0.4889-linux-x64" ]; then
+                        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.1.0.4889-linux-x64.zip
 
-                    unzip sonar-scanner-cli-7.1.0.4889-linux-x64.zip
+                        unzip -o sonar-scanner-cli-7.1.0.4889-linux-x64.zip
+                    fi
 
                     export PATH=$PATH:$(pwd)/sonar-scanner-7.1.0.4889-linux-x64/bin
 
