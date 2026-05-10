@@ -42,11 +42,15 @@ pipeline {
 
         stage('SonarQube') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    sh '''
-                    cd client
-                    ${scannerHome}/bin/sonar-scannerfix 
-                    '''
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+
+                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                        sh """
+                        cd client
+                        ${scannerHome}/bin/sonar-scanner
+                        """
+                    }
                 }
             }
         }
