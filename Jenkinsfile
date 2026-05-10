@@ -45,7 +45,7 @@ pipeline {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
                     cd client
-                    ./node_modules/.bin/sonar-scanner
+                    ${scannerHome}/bin/sonar-scannerfix 
                     '''
                 }
             }
