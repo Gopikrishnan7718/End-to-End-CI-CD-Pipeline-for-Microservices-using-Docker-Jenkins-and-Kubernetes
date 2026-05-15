@@ -42,3 +42,7 @@ services:
           dockerfile: Dockerfile
           context: ./worker
 
+       environment:
+          - REDIS_HOST=redis
+          - REDIS_PORT=6379
+
