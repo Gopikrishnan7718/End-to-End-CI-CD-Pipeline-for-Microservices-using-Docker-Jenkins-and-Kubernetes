@@ -1,0 +1,44 @@
+services:
+    postgres:
+      image: 'postgres:15'
+      environment: 
+         - POSTGRES_USER=postgres
+         - POSTGRES_PASSWORD=postgres
+         - POSTGRES_DB=postgres 
+   
+    redis:
+       image: redis:7-alpine
+
+    nginx:
+       build:
+          dockerfile: Dockerfile
+          context: ./nginx
+
+       ports:
+         - '3051:80'
+
+    api:
+      build:
+         dockerfile: Dockerfile
+         context: ./server
+
+      environment:
+          - REDIS_HOST=redis
+          - REDIS_PORT=6379
+          - PGUSER=postgres
+          - PGHOST=postgres
+          - PGDATABASE=postgres
+          - PGPASSWORD=postgres
+          - PGPORT=5432    
+
+
+    client:
+       build:
+          dockerfile: Dockerfile
+          context: ./client
+
+    worker:
+       build:
+          dockerfile: Dockerfile
+          context: ./worker
+
