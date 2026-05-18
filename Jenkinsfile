@@ -106,16 +106,27 @@ pipeline {
 
         stage('Integration Test') {
             steps {
+
+                sh 'docker compose -f docker-compose-ci.yml up -d'
+
                 sh '''
-                docker compose -f docker-compose-ci.yml up -d
+                echo "Waiting for application to start..."
 
                 for i in {1..10}; do
-                  curl -f http://localhost:3051 && break
-                  sleep 3
+                curl -f http://localhost:3051 && exit 0
+
+                echo "Application not ready yet..."
+                sleep 5
                 done
 
-                docker compose -f docker-compose.ci.yml down
+                echo "Application failed to start"
+
+                docker compose -f docker-compose-ci.yml logs
+
+                exit 1
                 '''
+
+                sh 'docker compose -f docker-compose-ci.yml down'
             }
         }
 
