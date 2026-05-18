@@ -2,7 +2,12 @@ pipeline {
     agent {
         docker {
             image 'node:18'
-            args '--add-host=host.docker.internal:host-gateway -u root'
+
+            args '''
+            --add-host=host.docker.internal:host-gateway \
+            -u root \
+            -v /var/run/docker.sock:/var/run/docker.sock
+            '''
         }
     }
 
