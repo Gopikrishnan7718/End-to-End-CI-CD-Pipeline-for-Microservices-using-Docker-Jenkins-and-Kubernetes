@@ -107,7 +107,7 @@ pipeline {
         stage('Integration Test') {
             steps {
                 sh '''
-                docker-compose -f docker-compose.ci.yml up -d
+                docker compose -f docker-compose-ci.yml up -d
 
                 for i in {1..10}; do
                   curl -f http://localhost:3050 && break
