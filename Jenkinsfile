@@ -113,7 +113,9 @@ pipeline {
                 echo "Waiting for application to start..."
 
                 for i in {1..10}; do
-                curl -f http://localhost:3051 && exit 0
+
+                docker compose -f docker-compose-ci.yml exec -T nginx \
+                curl -f http://localhost && exit 0
 
                 echo "Application not ready yet..."
                 sleep 5
@@ -125,8 +127,12 @@ pipeline {
 
                 exit 1
                 '''
+            }
 
-                sh 'docker compose -f docker-compose-ci.yml down'
+            post {
+                always {
+                    sh 'docker compose -f docker-compose-ci.yml down'
+                }
             }
         }
 
