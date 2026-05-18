@@ -29,7 +29,8 @@ services:
           - PGHOST=postgres
           - PGDATABASE=postgres
           - PGPASSWORD=postgres
-          - PGPORT=5432    
+          - PGPORT=5432  
+          - PGSSLMODE=disable  
 
 
     client:

@@ -32,6 +32,7 @@ services:
       - PGDATABASE=postgres
       - PGPASSWORD=postgres
       - PGPORT=5432
+      - PGSSLMODE=disable
 
   client:
     build:
