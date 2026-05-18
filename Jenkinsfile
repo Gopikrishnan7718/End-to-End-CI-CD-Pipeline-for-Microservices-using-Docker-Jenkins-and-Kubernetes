@@ -110,11 +110,11 @@ pipeline {
                 docker compose -f docker-compose-ci.yml up -d
 
                 for i in {1..10}; do
-                  curl -f http://localhost:3050 && break
+                  curl -f http://localhost:3051 && break
                   sleep 3
                 done
 
-                docker-compose -f docker-compose.ci.yml down
+                docker compose -f docker-compose.ci.yml down
                 '''
             }
         }
