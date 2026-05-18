@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:18'
+            image 'gopidoc77/jenkins-agent:v1'
 
             args '''
             --add-host=host.docker.internal:host-gateway \
