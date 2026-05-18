@@ -71,7 +71,15 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    env.COMMIT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+
+                    sh '''
+                    git config --global --add safe.directory /var/lib/jenkins/workspace/Multi-service-Application
+                    '''
+
+                    env.COMMIT = sh(
+                        script: "git rev-parse --short HEAD",
+                        returnStdout: true
+                    ).trim()
                 }
 
                 sh '''
