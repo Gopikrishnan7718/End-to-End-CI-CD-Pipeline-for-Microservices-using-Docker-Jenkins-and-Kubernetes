@@ -83,6 +83,10 @@ pipeline {
                 }
 
                 sh '''
+                apt-get update
+                apt-get install -y docker.io
+
+
                 docker build -t gopidoc77/fib-client:$COMMIT ./client
                 docker build -t gopidoc77/fib-server:$COMMIT ./server
                 docker build -t gopidoc77/fib-worker:$COMMIT ./worker
