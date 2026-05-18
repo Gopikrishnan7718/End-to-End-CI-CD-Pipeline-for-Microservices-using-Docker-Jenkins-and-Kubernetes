@@ -138,14 +138,15 @@ pipeline {
 
         stage('Push Images') {
             steps {
+
                 withCredentials([usernamePassword(
-                    credentialsId: "${DOCKER_HUB_CREDS}",
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
 
                     sh '''
-                    echo $PASSWORD | docker login -u $USERNAME --password-stdin
+                    echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
 
                     docker push gopidoc77/fib-client:$COMMIT
                     docker push gopidoc77/fib-server:$COMMIT
@@ -156,11 +157,12 @@ pipeline {
                     docker push gopidoc77/fib-server:latest
                     docker push gopidoc77/fib-worker:latest
                     docker push gopidoc77/fib-nginx:latest
+
+                    docker logout
                     '''
                 }
             }
         }
-    }
 
     post {
         always {
