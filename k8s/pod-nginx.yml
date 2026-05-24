@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: fib-nginx-pod
+   labels:
+      app: nginx
+      type: frontend
+
+spec:
+  containers:
+     - name: nginx-container
+       image: gopidoc77/fib-nginx:latest

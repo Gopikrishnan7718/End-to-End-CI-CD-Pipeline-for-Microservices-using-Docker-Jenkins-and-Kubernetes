@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+  labels:
+     app: client
+     type: frontend
+
+spec:
+  replicas: 3
+  selector:
+     matchLabels:
+               app: client
+               type: frontend
+  template:
+    metadata:
+       labels:
+          app: client
+          type: frontend
+
+    spec:
+      containers:
+      - name: client-container
+        image: gopidoc77/fib-client:latest
+

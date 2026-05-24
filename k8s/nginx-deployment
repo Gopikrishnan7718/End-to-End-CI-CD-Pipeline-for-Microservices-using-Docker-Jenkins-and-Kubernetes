@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: nginx-deployment
+   labels:
+      app: nginx
+      type: frontend
+
+spec:
+  replicas: 3
+  selector:
+      matchLabels:
+          app: nginx
+          type: frontend
+
+  template:
+     metadata:
+        labels:
+          app: nginx
+          type: frontend
+
+     spec:
+          containers:
+            - name: nginx-container
+              image: gopidoc77/fib-nginx:latest
+
+

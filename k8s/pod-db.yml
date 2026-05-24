@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: fib-db-pod
+   labels:
+      app: postgres
+      type: backend
+
+spec:
+  containers:
+    - image: postgres:15
+      name: db-container
+
+      env:
+        - name: POSTGRES_USER
+          value: postgres
+
+        - name: POSTGRES_PASSWORD
+          value: postgres
+
+        - name: POSTGRES_DB
+          value: postgres

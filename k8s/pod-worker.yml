@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fib-worker-pod
+  labels:
+     app: worker
+     type: backend
+
+spec:
+  containers:
+    - image: gopidoc77/fib-worker:latest
+      name: worker-container
+      
+      env:
+        - name: REDIS_HOST
+          value: redis
+
+        - name: REDIS_PORT
+          value: "6379"

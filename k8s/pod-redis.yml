@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fib-redis-pod
+  labels:
+    app: redis
+    type: backend
+spec:
+  containers:
+     - name: redis-container
+       image: redis:7-alpine
