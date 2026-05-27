@@ -1,42 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-   name: worker-deployment
-   labels:
-           app: worker
-           type: backend
+  name: worker-deployment
 
 spec:
   replicas: 3
-  selector: 
+
+  selector:
     matchLabels:
-              app: worker
-              type: backend
+      app: worker
+      type: backend
 
   template:
-     metadata:
-  
-       labels:
-         app: worker
-         type: backend
+    metadata:
+      labels:
+        app: worker
+        type: backend
 
-     spec:
-       containers:
-        - image: gopidoc77/fib-worker:latest
-          name: worker-container
-      
+    spec:
+      containers:
+        - name: worker-container
+
+          image: gopidoc77/fib-worker:latest
+
           envFrom:
-           - configMapRef:
-             name: app-config
-   
-          resources:
-              requests:
-                memory: "128Mi"
-                cpu: "100m"
+            - configMapRef:
+                name: app-config
 
-              limits:
-                memory: "256Mi"
-                cpu: "500m"
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - ps aux | grep node
+
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "200m"
+
+            limits:
+              memory: "256Mi"
+              cpu: "700m"
           
 
           
