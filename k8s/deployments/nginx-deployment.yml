@@ -1,27 +1,53 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-   name: nginx-deployment
-   labels:
-      app: nginx
-      type: frontend
+  name: nginx-deployment
+  labels:
+    app: nginx
+    type: frontend
 
 spec:
   replicas: 3
+
   selector:
-      matchLabels:
-          app: nginx
-          type: frontend
+    matchLabels:
+      app: nginx
+      type: frontend
 
   template:
-     metadata:
-        labels:
-          app: nginx
-          type: frontend
+    metadata:
+      labels:
+        app: nginx
+        type: frontend
 
-     spec:
-          containers:
-            - name: nginx-container
-              image: gopidoc77/fib-nginx:latest
+    spec:
+      containers:
+        - name: nginx-container
+          image: gopidoc77/fib-nginx:latest
 
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d
 
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+      volumes:
+        - name: nginx-config-volume
+
+          configMap:
+            name: nginx-config

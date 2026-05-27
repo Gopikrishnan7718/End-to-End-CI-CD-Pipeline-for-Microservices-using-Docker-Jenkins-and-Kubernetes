@@ -29,24 +29,34 @@ spec:
           ports:
             - containerPort: 5000
 
-          env:
-            - name: REDIS_HOST
-              value: redis
+          envFrom:
+            - configMapRef:
+                name: app-config
 
-            - name: REDIS_PORT
-              value: "6379"
+            - secretRef:
+                name: postgres-secret
 
-            - name: PGHOST
-              value: postgres
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
 
-            - name: PGPORT
-              value: "5432"
+            initialDelaySeconds: 15
+            periodSeconds: 10
 
-            - name: PGUSER
-              value: postgres
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
 
-            - name: PGPASSWORD
-              value: postgres
+            initialDelaySeconds: 5
+            periodSeconds: 5
 
-            - name: PGDATABASE
-              value: postgres
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

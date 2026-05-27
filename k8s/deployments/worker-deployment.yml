@@ -25,9 +25,18 @@ spec:
         - image: gopidoc77/fib-worker:latest
           name: worker-container
       
-          env:
-           - name: REDIS_HOST
-             value: redis
+          envFrom:
+           - configMapRef:
+             name: app-config
+   
+          resources:
+              requests:
+                memory: "128Mi"
+                cpu: "100m"
 
-           - name: REDIS_PORT
-             value: "6379"
+              limits:
+                memory: "256Mi"
+                cpu: "500m"
+          
+
+          
