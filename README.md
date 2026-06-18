@@ -166,3 +166,4 @@ Access the app at `http://localhost:3050`
 - Add Horizontal Pod Autoscaler (HPA)
 - Add CloudWatch or Prometheus monitoring
 - Add multi-environment setup (Dev / Stage / Prod)
+test
