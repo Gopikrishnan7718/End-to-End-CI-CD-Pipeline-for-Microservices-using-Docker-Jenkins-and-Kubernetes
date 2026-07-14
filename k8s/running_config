@@ -1,0 +1,37 @@
+gopi@shadowfx:~/Devops/doc_learn/116-checkpoint/complex/k8s/services$ kubectl get all
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/api-deployment-5bb8b959ff-c455g      1/1     Running   0          2d
+pod/api-deployment-5bb8b959ff-rcvnw      1/1     Running   0          2d
+pod/api-deployment-5bb8b959ff-t9ql5      1/1     Running   0          2d
+pod/client-deployment-856dcc56f6-7qf4q   1/1     Running   0          2d
+pod/client-deployment-856dcc56f6-l5xkj   1/1     Running   0          2d
+pod/client-deployment-856dcc56f6-sfvr4   1/1     Running   0          2d
+pod/postgres-statefulset-0               1/1     Running   0          2d
+pod/redis-statefulset-0                  1/1     Running   0          2d
+pod/worker-deployment-6f9cddfcf-2ttzz    1/1     Running   0          2d
+pod/worker-deployment-6f9cddfcf-8lxj9    1/1     Running   0          2d
+pod/worker-deployment-6f9cddfcf-cg4ql    1/1     Running   0          2d
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/api          ClusterIP   10.109.61.26    <none>        5000/TCP   45h
+service/client       ClusterIP   10.98.161.245   <none>        3000/TCP   45h
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    2d1h
+service/postgres     ClusterIP   None            <none>        5432/TCP   45h
+service/redis        ClusterIP   None            <none>        6379/TCP   45h
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api-deployment      3/3     3            3           2d
+deployment.apps/client-deployment   3/3     3            3           2d
+deployment.apps/worker-deployment   3/3     3            3           2d
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/api-deployment-5bb8b959ff      3         3         3       2d
+replicaset.apps/client-deployment-856dcc56f6   3         3         3       2d
+replicaset.apps/worker-deployment-6f9cddfcf    3         3         3       2d
+
+NAME                                    READY   AGE
+statefulset.apps/postgres-statefulset   1/1     2d
+statefulset.apps/redis-statefulset      1/1     2d
+gopi@shadowfx:~/Devops/doc_learn/116-checkpoint/complex/k8s/services$ 
+
+
