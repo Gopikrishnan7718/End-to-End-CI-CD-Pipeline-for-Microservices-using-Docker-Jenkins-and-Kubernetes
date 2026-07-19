@@ -1,0 +1,23 @@
+You should have a AWS account and configure aws CLI.
+
+
+Create EKS cluster IAM Role:
+
+AWS service ---> EKS ---> EKS cluster --->
+policy name - AmazonEKSClusterPolicy
+role name - EKS-Devops-project-1
+
+once role created, add the below policy:
+AmazonEKSVPCResourceController
+
+Create Node Group IAM Role:
+
+AWS service --> EC2 --> 
+
+ADD below policies:
+
+AmazonEC2ContainerRegistryReadOnly
+AmazonEKS_CNI_Policy
+AmazonEKSWorkerNodePolicy
+
+Create role. ---> name - EKS-Devops-Project-EKS-Noderole

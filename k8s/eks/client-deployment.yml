@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: client-deployment
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: client
+      type: frontend
+
+  template:
+    metadata:
+      labels:
+        app: client
+        type: frontend
+
+    spec:
+      containers:
+        - name: client-container
+
+          image: gopidoc77/fib-client:latest
+
+          ports:
+            - containerPort: 3000
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+
+            limits:
+              memory: "256Mi"
+              cpu: "300m"
+
