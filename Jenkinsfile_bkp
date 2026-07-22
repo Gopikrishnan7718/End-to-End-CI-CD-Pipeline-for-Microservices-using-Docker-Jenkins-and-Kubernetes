@@ -1,0 +1,144 @@
+pipeline {
+    agent {
+        docker {
+            image 'gopidoc77/jenkins-agent:v2'
+
+            args '''
+            --add-host=host.docker.internal:host-gateway \
+            -u root \
+            -v /var/run/docker.sock:/var/run/docker.sock
+            '''
+        }
+    }
+
+    environment {
+        DOCKER_HUB_CREDS = 'docker-hub-creds'
+        SONARQUBE_SERVER = 'sonarqube-server'
+        CI = 'true'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                cd client && npm install
+                cd ../server && npm install
+                cd ../worker && npm install
+                '''
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                sh '''
+                cd client && npm test -- --watchAll=false
+                cd ../server && npm test
+                cd ../worker && npm test
+                '''
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh '''
+                    cd client
+                    sonar-scanner
+                    '''
+                }
+            }
+        }
+
+        stage('Build Client') {
+            steps { sh 'cd client && npm run build' }
+        }
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh "git config --global --add safe.directory /var/lib/jenkins/workspace/Multi-service-Application"
+                    env.COMMIT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                }
+
+                sh '''
+                docker build -t gopidoc77/fib-client:$COMMIT ./client
+                docker build -t gopidoc77/fib-server:$COMMIT ./server
+                docker build -t gopidoc77/fib-worker:$COMMIT ./worker
+                docker build -t gopidoc77/fib-nginx:$COMMIT ./nginx
+
+                docker tag gopidoc77/fib-client:$COMMIT gopidoc77/fib-client:latest
+                docker tag gopidoc77/fib-server:$COMMIT gopidoc77/fib-server:latest
+                docker tag gopidoc77/fib-worker:$COMMIT gopidoc77/fib-worker:latest
+                docker tag gopidoc77/fib-nginx:$COMMIT gopidoc77/fib-nginx:latest
+                '''
+            }
+        }
+
+        stage('Integration Test') {
+            steps {
+                sh 'docker compose -f docker-compose-ci.yml up -d'
+                sh '''
+                echo "Waiting..."
+                for i in {1..10}; do
+                  docker compose -f docker-compose-ci.yml exec -T nginx curl -f http://localhost && exit 0
+                  sleep 5
+                done
+                docker compose -f docker-compose-ci.yml logs
+                exit 1
+                '''
+            }
+            post {
+                always {
+                    sh 'docker compose -f docker-compose-ci.yml down'
+                }
+            }
+        }
+
+        stage('Push Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                    echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                    for IMAGE in fib-client fib-server fib-worker fib-nginx
+                    do
+                      docker push gopidoc77/$IMAGE:$COMMIT
+                      docker push gopidoc77/$IMAGE:latest
+                    done
+                    docker logout
+                    '''
+                }
+            }
+        }
+
+        stage('Push Images to Amazon ECR') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-jenkins-creds']]) {
+                    sh '''
+                    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 382876614364.dkr.ecr.ap-south-1.amazonaws.com
+
+                    for IMAGE in fib-client fib-server fib-worker fib-nginx
+                    do
+                      docker tag gopidoc77/$IMAGE:$COMMIT 382876614364.dkr.ecr.ap-south-1.amazonaws.com/$IMAGE:$COMMIT
+                      docker tag gopidoc77/$IMAGE:latest 382876614364.dkr.ecr.ap-south-1.amazonaws.com/$IMAGE:latest
+                      docker push 382876614364.dkr.ecr.ap-south-1.amazonaws.com/$IMAGE:$COMMIT
+                      docker push 382876614364.dkr.ecr.ap-south-1.amazonaws.com/$IMAGE:latest
+                    done
+
+                    docker logout
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker system prune -f'
+        }
+    }
+}
