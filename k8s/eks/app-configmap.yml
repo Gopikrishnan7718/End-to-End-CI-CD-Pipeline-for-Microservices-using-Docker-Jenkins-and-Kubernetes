@@ -3,13 +3,14 @@ kind: ConfigMap
 
 metadata:
   name: app-config
+  namespace: fib-app
 
 data:
-  REDIS_HOST: redis
-  REDIS_PORT: "6379"
-
-  PGHOST: postgres
+  POSTGRES_DB: "postgres"
+  PGHOST: "fib-posgres.c7sa2ym24foc.ap-south-1.rds.amazonaws.com"
   PGPORT: "5432"
 
-  PGUSER: postgres
-  PGDATABASE: postgres
+  REDIS_HOST: "fib-redis.ji4yg7.ng.0001.aps1.cache.amazonaws.com:6379"
+  REDIS_PORT: "6379"
+
+  NODE_ENV: "production"

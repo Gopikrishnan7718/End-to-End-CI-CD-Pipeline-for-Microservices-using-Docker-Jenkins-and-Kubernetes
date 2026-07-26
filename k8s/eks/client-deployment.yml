@@ -3,6 +3,7 @@ kind: Deployment
 
 metadata:
   name: client-deployment
+  namespace: fib-app
 
 spec:
   replicas: 3
@@ -21,8 +22,7 @@ spec:
     spec:
       containers:
         - name: client-container
-
-          image: gopidoc77/fib-client:latest
+          image: 382876614364.dkr.ecr.ap-south-1.amazonaws.com/fib-client:latest
 
           ports:
             - containerPort: 3000
@@ -31,7 +31,6 @@ spec:
             httpGet:
               path: /
               port: 3000
-
             initialDelaySeconds: 15
             periodSeconds: 10
 
@@ -39,7 +38,6 @@ spec:
             httpGet:
               path: /
               port: 3000
-
             initialDelaySeconds: 5
             periodSeconds: 5
 
@@ -51,4 +49,3 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "300m"
-

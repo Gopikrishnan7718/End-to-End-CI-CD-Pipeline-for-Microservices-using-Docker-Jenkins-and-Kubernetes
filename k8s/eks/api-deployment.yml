@@ -3,6 +3,7 @@ kind: Deployment
 
 metadata:
   name: api-deployment
+  namespace: fib-app
   labels:
     app: api
     type: backend
@@ -23,8 +24,8 @@ spec:
 
     spec:
       containers:
-        - image: gopidoc77/fib-server:latest
-          name: api-container
+        - name: api-container
+          image: 382876614364.dkr.ecr.ap-south-1.amazonaws.com/fib-server:latest
 
           ports:
             - containerPort: 5000
@@ -32,15 +33,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: app-config
-
             - secretRef:
-                name: postgres-secret
+                name: app-secret
 
           livenessProbe:
             httpGet:
               path: /
               port: 5000
-
             initialDelaySeconds: 15
             periodSeconds: 10
 
@@ -48,7 +47,6 @@ spec:
             httpGet:
               path: /
               port: 5000
-
             initialDelaySeconds: 5
             periodSeconds: 5
 
